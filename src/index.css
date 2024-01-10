@@ -1,1 +1,10 @@
-@import url("./modern-normalize.min.css");
+@import url("./assets/styles/modern-normalize.min.css");
+
+/* html {
+    height: 100%;
+}
+
+body,
+#root {
+    min-height: 100%;
+} */

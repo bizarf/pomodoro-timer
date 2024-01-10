@@ -1,8 +1,17 @@
-const Header = () => {
+import "../styles/Header.css";
+
+type Props = {
+    setSettingsModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Header = ({ setSettingsModal }: Props) => {
     return (
-        <div>
-            <h1>Header goes here</h1>
-        </div>
+        <header>
+            <h1>Pomodoro Timer</h1>
+            <button onClick={() => setSettingsModal((state) => !state)}>
+                &#9881; Setting
+            </button>
+        </header>
     );
 };
 
