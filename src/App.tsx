@@ -3,12 +3,23 @@ import "./App.css";
 import Header from "./assets/components/Header";
 import Information from "./assets/components/Information";
 import Settings from "./assets/components/Settings";
+import Times from "./assets/types/Times";
+import Breaks from "./assets/types/Breaks";
 
 const App = () => {
     const [running, setRunning] = useState<boolean>(false);
     // timer in seconds
     const [timer, setTimer] = useState<number>(1500);
     const [mode, setMode] = useState<string>("pomodoro");
+    const [times, setTimes] = useState<Times>({
+        pomodoro: 1500,
+        short: 300,
+        long: 900,
+    });
+    const [breaks, setBreaks] = useState<Breaks>({
+        shortBreak: 0,
+        longBreak: 4,
+    });
     // button refs for DOM manipulation
     const timerButtonRef = useRef<HTMLButtonElement>(null);
     const pomodoroBtnRef = useRef<HTMLButtonElement>(null);
@@ -48,8 +59,8 @@ const App = () => {
             setRunning((state) => !state);
         }
         setMode("pomodoro");
-        setTimer(1500);
-    }, [running]);
+        setTimer(times.pomodoro);
+    }, [running, times.pomodoro]);
 
     // short break button
     const onShortBreakBtn = useCallback(() => {
@@ -59,13 +70,12 @@ const App = () => {
             }
             setRunning((state) => !state);
         }
-        setTimer(300);
+        setTimer(times.short);
         setMode("short");
-        // setTimer(2);
-    }, [running]);
+    }, [running, times.short]);
 
     // long break button
-    const onLongBreakBtn = () => {
+    const onLongBreakBtn = useCallback(() => {
         if (running) {
             if (timerButtonRef.current) {
                 timerButtonRef.current.innerText = "Start";
@@ -73,8 +83,8 @@ const App = () => {
             setRunning((state) => !state);
         }
         setMode("long");
-        setTimer(900);
-    };
+        setTimer(times.long);
+    }, [running, times.long]);
 
     // skip button function. set the timer to 0 and then let the useEffect function below handle the switching of modes. avoids repeating code
     const onSkipBtn = () => {
@@ -100,9 +110,19 @@ const App = () => {
                 const notify = new Notification("Time to take a short break!");
                 setTimeout(() => {
                     notify.close();
-                }, 10000);
+                }, 5000);
             }
-            onShortBreakBtn();
+            console.log(breaks);
+            if (breaks.shortBreak === breaks.longBreak) {
+                setBreaks({ ...breaks, shortBreak: 0 });
+                onLongBreakBtn();
+            } else {
+                setBreaks((prevBreaks) => ({
+                    ...prevBreaks,
+                    shortBreak: prevBreaks.shortBreak + 1,
+                }));
+                onShortBreakBtn();
+            }
         }
 
         if (
@@ -118,7 +138,22 @@ const App = () => {
             }
             onPomodoroBtn();
         }
-    }, [mode, onPomodoroBtn, onShortBreakBtn, timer]);
+    }, [breaks, mode, onLongBreakBtn, onPomodoroBtn, onShortBreakBtn, timer]);
+
+    // if the times are changed via the settings modal, then we have to reflect that change on the current mode that the timer is on
+    useEffect(() => {
+        switch (mode) {
+            case "pomodoro":
+                setTimer(times.pomodoro);
+                break;
+            case "short":
+                setTimer(times.short);
+                break;
+            case "long":
+                setTimer(times.long);
+                break;
+        }
+    }, [mode, times]);
 
     // selected button colour swapping feature
     useEffect(() => {
@@ -244,7 +279,13 @@ const App = () => {
                     </div>
                 </div>
                 {settingsModal && (
-                    <Settings setSettingsModal={setSettingsModal} />
+                    <Settings
+                        setSettingsModal={setSettingsModal}
+                        times={times}
+                        setTimes={setTimes}
+                        breaks={breaks}
+                        setBreaks={setBreaks}
+                    />
                 )}
             </div>
             <Information />

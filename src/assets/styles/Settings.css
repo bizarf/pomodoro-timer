@@ -13,9 +13,91 @@
 
 .settings-modal--container {
     width: 100%;
-    max-width: 20rem;
+    max-width: 24rem;
     background-color: white;
-    color: black;
-    padding: 1rem;
+    color: #475569;
     border-radius: 10px;
+    overflow: hidden;
+}
+
+.settings-modal--bottom {
+    background-color: #e2e8f0;
+}
+
+.settings-modal--container h2 {
+    margin: 0;
+    padding: 1rem;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+h3 {
+    margin: 0;
+    font-size: 1em;
+    font-weight: bold;
+    color: #94a3b8;
+}
+
+h4 {
+    margin: 0;
+    padding: 1rem 0;
+    font-size: 1em;
+}
+
+.timeSettings-container {
+    padding: 1rem;
+    font-size: 1em;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.timerSetting-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.timerSetting-panel div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.timerSetting-panel div label {
+    font-size: 0.9em;
+    margin-bottom: 0.25rem;
+}
+
+.timerSetting-panel div input {
+    padding: 0.5rem;
+}
+
+.saveBtn {
+    margin: 1rem;
+    width: 5rem;
+    height: 2rem;
+    border: none;
+    background-color: #0f172a;
+    color: white;
+}
+
+.timerSetting-panel input,
+.longBreakIntervalSetting-container input {
+    background-color: #e2e8f0;
+    border: none;
+}
+
+.longBreakIntervalSetting-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.longBreakIntervalSetting-container label {
+    font-weight: bold;
+}
+
+.longBreakIntervalSetting-container input {
+    padding: 0.5rem;
+    width: 4rem;
 }
