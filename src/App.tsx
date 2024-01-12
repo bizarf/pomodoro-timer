@@ -20,7 +20,7 @@ const App = () => {
         long: 900,
     });
     const [breaks, setBreaks] = useState<Breaks>({
-        shortBreak: 0,
+        shortBreak: 1,
         longBreak: 4,
     });
     const [autoSettings, setAutoSettings] = useState<AutoSettings>({
@@ -103,8 +103,9 @@ const App = () => {
                 }, 5000);
             }
             // if the short breaks is equal or greater than the long break interval setting, then reset the short breaks to 0 and run the button function that sets the long break times. greater than is in case the user changes the long break setting to a value below the current amount of short breaks.
+            console.log(breaks.shortBreak);
             if (breaks.shortBreak >= breaks.longBreak) {
-                setBreaks({ ...breaks, shortBreak: 0 });
+                setBreaks({ ...breaks, shortBreak: 1 });
                 // auto run the next timer if the auto breaks setting is on
                 if (autoSettings.autoBreaks) {
                     onLongBreakBtn();
