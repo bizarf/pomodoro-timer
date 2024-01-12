@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import "../styles/Settings.css";
 import Times from "../types/Times";
 import Breaks from "../types/Breaks";
+import AutoSettings from "../types/AutoSettings";
 
 type Props = {
     setSettingsModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,6 +10,8 @@ type Props = {
     setTimes: React.Dispatch<React.SetStateAction<Times>>;
     breaks: Breaks;
     setBreaks: React.Dispatch<React.SetStateAction<Breaks>>;
+    autoSettings: AutoSettings;
+    setAutoSettings: React.Dispatch<React.SetStateAction<AutoSettings>>;
 };
 
 const Settings = ({
@@ -17,65 +20,48 @@ const Settings = ({
     setTimes,
     breaks,
     setBreaks,
+    autoSettings,
+    setAutoSettings,
 }: Props) => {
     const pomodoroTimeSettingRef = useRef<HTMLInputElement>(null);
     const shortTimeSettingRef = useRef<HTMLInputElement>(null);
     const longTimeSettingRef = useRef<HTMLInputElement>(null);
     const longBreakIntervalSettingRef = useRef<HTMLInputElement>(null);
+    const autoBreakSettingRef = useRef<HTMLInputElement>(null);
+    const autoPomodoroSettingRef = useRef<HTMLInputElement>(null);
 
     const handleSaveSettings = () => {
         if (
             pomodoroTimeSettingRef.current &&
             shortTimeSettingRef.current &&
             longTimeSettingRef.current &&
-            longBreakIntervalSettingRef.current
+            longBreakIntervalSettingRef.current &&
+            autoBreakSettingRef.current &&
+            autoPomodoroSettingRef.current
         ) {
-            // if the pomodoro time setting is changed, then update the pomodoro time in the times object
-            if (
-                // the times are save in seconds and as numbers, so have to convert to string to compare the input value as that is a string
-                (times.pomodoro / 60).toString() !=
-                pomodoroTimeSettingRef.current.value
-            ) {
-                setTimes({
-                    ...times,
-                    pomodoro:
-                        // convert the string to number and then multiply by 60 to change the minutes to seconds
-                        parseInt(pomodoroTimeSettingRef.current.value) * 60,
-                });
-            }
-            // if the short break time setting is changed, then update the short break time in the times object
-            if (
-                (times.short / 60).toString() !=
-                shortTimeSettingRef.current.value
-            ) {
-                setTimes({
-                    ...times,
-                    short: parseInt(shortTimeSettingRef.current.value) * 60,
-                });
-            }
-            // if the long break time setting is changed, then update the long break time in the times object
-            if (
-                (times.long / 60).toString() != longTimeSettingRef.current.value
-            ) {
-                setTimes({
-                    ...times,
-                    long: parseInt(longTimeSettingRef.current.value) * 60,
-                });
-            }
-            // update the long break interval setting if the setting is changed
-            if (
-                breaks.longBreak.toString() !=
-                longBreakIntervalSettingRef.current.value
-            ) {
-                setBreaks({
-                    ...breaks,
-                    longBreak: parseInt(
-                        longBreakIntervalSettingRef.current.value
-                    ),
-                });
-            }
+            // make a copy of the times object and update the values of each property
+            setTimes({
+                ...times,
+                pomodoro:
+                    // convert the string to number and then multiply by 60 to change the minutes to seconds
+                    parseInt(pomodoroTimeSettingRef.current.value) * 60,
+                short: parseInt(shortTimeSettingRef.current.value) * 60,
+                long: parseInt(longTimeSettingRef.current.value) * 60,
+            });
+            // make a copy of the breaks object and update the value of the longBreak property
+            setBreaks({
+                ...breaks,
+                longBreak: parseInt(longBreakIntervalSettingRef.current.value),
+            });
+            // make a copy of the autoSettings object and update the values of each property
+            setAutoSettings({
+                ...autoSettings,
+                autoBreaks: autoBreakSettingRef.current.checked,
+                autoPomodoro: autoPomodoroSettingRef.current.checked,
+            });
         }
         setSettingsModal((state) => !state);
+        document.body.style.overflow = "visible";
     };
 
     // on render, change the value of the input boxes to match the current time settings
@@ -85,7 +71,9 @@ const Settings = ({
             pomodoroTimeSettingRef.current &&
             shortTimeSettingRef.current &&
             longTimeSettingRef.current &&
-            longBreakIntervalSettingRef.current
+            longBreakIntervalSettingRef.current &&
+            autoBreakSettingRef.current &&
+            autoPomodoroSettingRef.current
         ) {
             // convert the seconds into minutes and then convert that to a string. we then set the input value to the converted string
             pomodoroTimeSettingRef.current.value = (
@@ -95,8 +83,10 @@ const Settings = ({
             longTimeSettingRef.current.value = (times.long / 60).toString();
             longBreakIntervalSettingRef.current.value =
                 breaks.longBreak.toString();
+            autoBreakSettingRef.current.checked = autoSettings.autoBreaks;
+            autoPomodoroSettingRef.current.checked = autoSettings.autoPomodoro;
         }
-    }, [breaks, times]);
+    }, [breaks, times, autoSettings]);
 
     return (
         <div
@@ -105,13 +95,12 @@ const Settings = ({
         >
             <div
                 className="settings-modal--container"
+                // prevent the handleSaveSettings function from running whenever the user clicks on anything in this div
                 onClick={(e) => e.stopPropagation()}
             >
                 <h2>Settings</h2>
                 <div className="timeSettings-container">
-                    <div className="timerHeader">
-                        <h3>TIMER</h3>
-                    </div>
+                    <h3>TIMER</h3>
                     <div>
                         <h4>Time (minutes)</h4>
                         <div
@@ -158,6 +147,28 @@ const Settings = ({
                                     ref={longTimeSettingRef}
                                 />
                             </div>
+                        </div>
+                        <div className="autoBreaksSetting-container">
+                            <label htmlFor="autoStartBreaks">
+                                Auto Start Breaks
+                            </label>
+                            <input
+                                type="checkbox"
+                                name="autoStartBreaks"
+                                id="autoStartBreaks"
+                                ref={autoBreakSettingRef}
+                            />
+                        </div>
+                        <div className="autoPomodorosSetting-container">
+                            <label htmlFor="autoPomodorosSetting">
+                                Auto Start Pomodoros
+                            </label>
+                            <input
+                                type="checkbox"
+                                name="autoPomodorosSetting"
+                                id="autoPomodorosSetting"
+                                ref={autoPomodoroSettingRef}
+                            />
                         </div>
                         <div className="longBreakIntervalSetting-container">
                             <label htmlFor="longBreakIntervalSetting-input">

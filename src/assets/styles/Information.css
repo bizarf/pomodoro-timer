@@ -1,0 +1,24 @@
+.information-container {
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+    background-color: white;
+    /* this will push the footer to the bottom of the page */
+    flex: 1 0 auto;
+}
+
+.pomotime-intro h2,
+.pomodoro-explanation h2 {
+    margin: 0;
+}
+
+.pomotime-intro,
+.pomodoro-explanation {
+    padding: 1rem 0;
+}
+
+@media (min-width: 640px) {
+    .information-container {
+        width: 40rem;
+        padding: 0;
+    }
+}

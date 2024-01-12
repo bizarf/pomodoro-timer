@@ -1,30 +1,43 @@
-# React + TypeScript + Vite
+# Pomodoro Timer - PomoTimer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The goal of this project is to make a pomodoro timer.
 
-Currently, two official plugins are available:
+-   [View the live site here](https://bizarf.github.io/pomodoro-timer/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#### Install:
 
-## Expanding the ESLint configuration
+To run this project on your local server, first install the dependencies with the command:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+After that is done, you can start the server with:
+
+```
+npm run dev
+```
+
+<hr>
+
+#### Features
+
+-   [x] Timer mode switching
+-   [x] Skip button
+-   [x] Use of notification API
+-   [x] Settings panel
+-   [x] Customisable times, auto breaks toggle, auto pomodoros toggle, and long break interval trigger
+-   [ ] Alarm sounds
+-   [x] Mobile support
+
+##### Tools and technologies used:
+
+-   React
+-   Vite
+-   Typescript
+
+<hr>
+
+##### Credits:
+
+-   Inspired by [Pomofocus](https://pomofocus.io/)

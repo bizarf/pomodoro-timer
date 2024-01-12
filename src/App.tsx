@@ -5,6 +5,9 @@ import Information from "./assets/components/Information";
 import Settings from "./assets/components/Settings";
 import Times from "./assets/types/Times";
 import Breaks from "./assets/types/Breaks";
+import skipIcon from "./assets/svgs/skip-arrow-svgrepo-com.svg";
+import AutoSettings from "./assets/types/AutoSettings";
+import Footer from "./assets/components/Footer";
 
 const App = () => {
     const [running, setRunning] = useState<boolean>(false);
@@ -20,11 +23,12 @@ const App = () => {
         shortBreak: 0,
         longBreak: 4,
     });
+    const [autoSettings, setAutoSettings] = useState<AutoSettings>({
+        autoBreaks: false,
+        autoPomodoro: false,
+    });
     // button refs for DOM manipulation
     const timerButtonRef = useRef<HTMLButtonElement>(null);
-    const pomodoroBtnRef = useRef<HTMLButtonElement>(null);
-    const shortBtnRef = useRef<HTMLButtonElement>(null);
-    const longBtnRef = useRef<HTMLButtonElement>(null);
     const timerContainerRef = useRef<HTMLDivElement>(null);
     const appSectionRef = useRef<HTMLDivElement>(null);
     // boolean state for the settings modal
@@ -43,19 +47,11 @@ const App = () => {
         } else {
             setRunning((state) => !state);
         }
-        // if statement for timerButtonRef is to make sure the button has loaded in the DOM
-        if (timerButtonRef.current) {
-            // set the innerText depending on the running state
-            timerButtonRef.current.innerText = running ? "START" : "PAUSE";
-        }
     };
 
     // pomodoro button
     const onPomodoroBtn = useCallback(() => {
         if (running) {
-            if (timerButtonRef.current) {
-                timerButtonRef.current.innerText = "Start";
-            }
             setRunning((state) => !state);
         }
         setMode("pomodoro");
@@ -65,9 +61,6 @@ const App = () => {
     // short break button
     const onShortBreakBtn = useCallback(() => {
         if (running) {
-            if (timerButtonRef.current) {
-                timerButtonRef.current.innerText = "Start";
-            }
             setRunning((state) => !state);
         }
         setTimer(times.short);
@@ -77,9 +70,6 @@ const App = () => {
     // long break button
     const onLongBreakBtn = useCallback(() => {
         if (running) {
-            if (timerButtonRef.current) {
-                timerButtonRef.current.innerText = "Start";
-            }
             setRunning((state) => !state);
         }
         setMode("long");
@@ -112,16 +102,28 @@ const App = () => {
                     notify.close();
                 }, 5000);
             }
-            console.log(breaks);
-            if (breaks.shortBreak === breaks.longBreak) {
+            // if the short breaks is equal or greater than the long break interval setting, then reset the short breaks to 0 and run the button function that sets the long break times. greater than is in case the user changes the long break setting to a value below the current amount of short breaks.
+            if (breaks.shortBreak >= breaks.longBreak) {
                 setBreaks({ ...breaks, shortBreak: 0 });
-                onLongBreakBtn();
+                // auto run the next timer if the auto breaks setting is on
+                if (autoSettings.autoBreaks) {
+                    onLongBreakBtn();
+                    setRunning((state) => !state);
+                } else {
+                    onLongBreakBtn();
+                }
             } else {
                 setBreaks((prevBreaks) => ({
                     ...prevBreaks,
                     shortBreak: prevBreaks.shortBreak + 1,
                 }));
-                onShortBreakBtn();
+                // auto run the next timer if the auto breaks setting is on
+                if (autoSettings.autoBreaks) {
+                    onShortBreakBtn();
+                    setRunning((state) => !state);
+                } else {
+                    onShortBreakBtn();
+                }
             }
         }
 
@@ -136,9 +138,23 @@ const App = () => {
                     notify.close();
                 }, 10000);
             }
-            onPomodoroBtn();
+            // auto run the next timer if the auto pomodoro setting is on
+            if (autoSettings.autoPomodoro) {
+                onPomodoroBtn();
+                setRunning((state) => !state);
+            } else {
+                onPomodoroBtn();
+            }
         }
-    }, [breaks, mode, onLongBreakBtn, onPomodoroBtn, onShortBreakBtn, timer]);
+    }, [
+        autoSettings,
+        breaks,
+        mode,
+        onLongBreakBtn,
+        onPomodoroBtn,
+        onShortBreakBtn,
+        timer,
+    ]);
 
     // if the times are changed via the settings modal, then we have to reflect that change on the current mode that the timer is on
     useEffect(() => {
@@ -158,61 +174,22 @@ const App = () => {
     // selected button colour swapping feature
     useEffect(() => {
         if (
-            pomodoroBtnRef.current &&
-            shortBtnRef.current &&
-            longBtnRef.current &&
             timerContainerRef.current &&
             appSectionRef.current &&
             timerButtonRef.current
         )
             switch (mode) {
                 case "pomodoro":
-                    pomodoroBtnRef.current.classList.replace(
-                        "non-active-mode",
-                        "pomodoroBtn-active"
-                    );
-                    shortBtnRef.current.classList.replace(
-                        "shortBtn-active",
-                        "non-active-mode"
-                    );
-                    longBtnRef.current.classList.replace(
-                        "longBtn-active",
-                        "non-active-mode"
-                    );
                     timerContainerRef.current.style.backgroundColor = "#e11d48";
                     appSectionRef.current.style.backgroundColor = "#be123c";
                     timerButtonRef.current.style.color = "#e11d48";
                     break;
                 case "short":
-                    pomodoroBtnRef.current.classList.replace(
-                        "pomodoroBtn-active",
-                        "non-active-mode"
-                    );
-                    shortBtnRef.current.classList.replace(
-                        "non-active-mode",
-                        "shortBtn-active"
-                    );
-                    longBtnRef.current.classList.replace(
-                        "longBtn-active",
-                        "non-active-mode"
-                    );
                     timerContainerRef.current.style.backgroundColor = "#0d9488";
                     appSectionRef.current.style.backgroundColor = "#0f766e";
                     timerButtonRef.current.style.color = "#0d9488";
                     break;
                 case "long":
-                    pomodoroBtnRef.current.classList.replace(
-                        "pomodoroBtn-active",
-                        "non-active-mode"
-                    );
-                    shortBtnRef.current.classList.replace(
-                        "shortBtn-active",
-                        "non-active-mode"
-                    );
-                    longBtnRef.current.classList.replace(
-                        "non-active-mode",
-                        "longBtn-active"
-                    );
                     timerContainerRef.current.style.backgroundColor = "#0284c7";
                     appSectionRef.current.style.backgroundColor = "#0369a1";
                     timerButtonRef.current.style.color = "#0284c7";
@@ -230,27 +207,36 @@ const App = () => {
     return (
         <>
             <div ref={appSectionRef} className="app-section">
-                <Header setSettingsModal={setSettingsModal} />
-                <div className="container" ref={timerContainerRef}>
+                <Header setSettingsModal={setSettingsModal} mode={mode} />
+                <div className="activity-container">
+                    {mode === "pomodoro" && <span>Study Time!</span>}
+                    {(mode === "short" || mode === "long") && (
+                        <span>Break Time!</span>
+                    )}
+                </div>
+                <div className="app-container" ref={timerContainerRef}>
                     <div className="mode-controls">
                         <button
                             onClick={onPomodoroBtn}
-                            ref={pomodoroBtnRef}
-                            className="modeBtns non-active-mode"
+                            className={`modeBtns ${
+                                mode === "pomodoro" && "pomodoroBtn-active"
+                            } non-active-mode`}
                         >
                             Pomodoro
                         </button>
                         <button
                             onClick={onShortBreakBtn}
-                            ref={shortBtnRef}
-                            className="modeBtns non-active-mode"
+                            className={`modeBtns ${
+                                mode === "short" && "shortBtn-active"
+                            } non-active-mode`}
                         >
                             Short Break
                         </button>
                         <button
                             onClick={onLongBreakBtn}
-                            ref={longBtnRef}
-                            className="modeBtns non-active-mode"
+                            className={`modeBtns ${
+                                mode === "long" && "longBtn-active"
+                            } non-active-mode`}
                         >
                             Long Break
                         </button>
@@ -259,6 +245,7 @@ const App = () => {
                         {minutes}:{seconds}
                     </div>
                     <div className="timer-controls">
+                        {/* empty div, as we're going to use grid to make 3 columns with each one having 1fr of space */}
                         <div></div>
                         <div>
                             <button
@@ -266,15 +253,18 @@ const App = () => {
                                 ref={timerButtonRef}
                                 className="startBtn"
                             >
-                                START
+                                {running ? "PAUSE" : "START"}
                             </button>
                         </div>
                         <div className="skipBtn-container">
-                            {running && (
-                                <button onClick={onSkipBtn} className="skipBtn">
-                                    &#9197;
-                                </button>
-                            )}
+                            <button
+                                onClick={onSkipBtn}
+                                className={`skipBtn ${
+                                    running ? "fade-in" : ""
+                                }`}
+                            >
+                                <img src={skipIcon} alt="skip" width={30} />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -285,10 +275,13 @@ const App = () => {
                         setTimes={setTimes}
                         breaks={breaks}
                         setBreaks={setBreaks}
+                        autoSettings={autoSettings}
+                        setAutoSettings={setAutoSettings}
                     />
                 )}
             </div>
             <Information />
+            <Footer />
         </>
     );
 };

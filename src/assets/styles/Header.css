@@ -1,3 +1,33 @@
-h1 {
+header h1 {
     margin: 0;
+    font-size: 1.5em;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settingsBtn {
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+}
+
+.settingsBtn img {
+    margin-right: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    header h1 {
+        font-size: 2em;
+    }
+
+    header {
+        margin: 0 2rem;
+    }
 }

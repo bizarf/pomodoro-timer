@@ -1,14 +1,25 @@
+/* header + app container */
 .app-section {
     color: white;
     padding: 1rem;
     transition: background-color 0.5s ease;
 }
 
-.container {
-    margin: 3rem auto;
-    width: 30rem;
+/* container with dynamic text based on which mode is active */
+.activity-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+/* contains the mode selector buttons, timer, start/pause button, and skip button */
+.app-container {
+    margin: 1.5rem auto;
+    /* width: 30rem; */
     padding: 0.5rem;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     transition: background-color 0.5s ease;
 }
 
@@ -17,27 +28,29 @@
     display: flex;
     justify-content: center;
     font-weight: bold;
+    padding: 1rem 0;
 }
 
 .timer-controls {
     display: grid;
+    /* make three columns, so that the start/pause button will be in the middle and the skip button in the third column. first column is an empty div but filled to 1fr */
     grid-template-columns: repeat(3, 1fr);
     justify-items: center;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
 }
 
 /* start and pause button */
 .startBtn {
     font-size: 1.5em;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     width: 12rem;
     height: 3.5rem;
     transition: background-color 0.5s ease;
     font-weight: 600;
 }
 
-/* skip button */
+/* skip button stuff */
 .skipBtn-container {
     display: flex;
 }
@@ -46,20 +59,21 @@
     background-color: transparent;
     border: none;
     font-size: 2em;
-    /* transition: opacity 0.5s ease; */
+    opacity: 0;
+    /* pointer-events can still be fired when opacity is set to 0, so need to set to none */
+    pointer-events: none;
+    transition: opacity 0.5s ease-in;
+}
+
+/* transition effect class and enables pointer-events */
+.skipBtn.fade-in {
     opacity: 1;
-    animation: fade 1s;
+    pointer-events: auto;
 }
 
-@keyframes fade {
-    0% {
-        opacity: 0;
-    }
-}
-
-/* mode buttons */
+/* mode buttons stuff */
 .mode-controls {
-    margin: 1rem 0;
+    margin: 0.5rem 0;
     display: flex;
     justify-content: center;
 }
@@ -68,9 +82,10 @@
     color: white;
     border: none;
     padding: 0.5rem;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
 }
 
+/* turn the non-active mode buttons transparent and change their font weight */
 .non-active-mode {
     background-color: transparent;
     font-weight: 300;
@@ -78,15 +93,24 @@
 
 .pomodoroBtn-active {
     background-color: #9f1239;
-    font-weight: bold;
 }
 
 .shortBtn-active {
     background-color: #115e59;
-    font-weight: bold;
 }
 
 .longBtn-active {
-    background-color: #155e75;
+    background-color: #075985;
+}
+
+.pomodoroBtn-active,
+.shortBtn-active,
+.longBtn-active {
     font-weight: bold;
+}
+
+@media (min-width: 640px) {
+    .app-container {
+        width: 30rem;
+    }
 }
