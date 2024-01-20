@@ -32,6 +32,7 @@ const Settings = ({
 
     const handleSaveSettings = () => {
         if (
+            // if the DOM elements have rendered
             pomodoroTimeSettingRef.current &&
             shortTimeSettingRef.current &&
             longTimeSettingRef.current &&
@@ -39,28 +40,42 @@ const Settings = ({
             autoBreakSettingRef.current &&
             autoPomodoroSettingRef.current
         ) {
-            // make a copy of the times object and update the values of each property
-            setTimes({
+            // make a new variable and copy of the times object and update the values of each property
+            const newTimes = {
                 ...times,
                 pomodoro:
                     // convert the string to number and then multiply by 60 to change the minutes to seconds
                     parseInt(pomodoroTimeSettingRef.current.value) * 60,
                 short: parseInt(shortTimeSettingRef.current.value) * 60,
                 long: parseInt(longTimeSettingRef.current.value) * 60,
-            });
-            // make a copy of the breaks object and update the value of the longBreak property
-            setBreaks({
+            };
+            // make a new variable and copy of the breaks object and update the value of the longBreak property
+            const newBreaks = {
                 ...breaks,
                 longBreak: parseInt(longBreakIntervalSettingRef.current.value),
-            });
-            // make a copy of the autoSettings object and update the values of each property
-            setAutoSettings({
+            };
+            // make a new variable and copy of the autoSettings object and update the values of each property
+            const newAutoSettings = {
                 ...autoSettings,
                 autoBreaks: autoBreakSettingRef.current.checked,
                 autoPomodoro: autoPomodoroSettingRef.current.checked,
-            });
+            };
+            // update all three states
+            setTimes(newTimes);
+            setBreaks(newBreaks);
+            setAutoSettings(newAutoSettings);
+
+            // make a new object containing all three settings
+            const settings = {
+                times: newTimes,
+                breaks: newBreaks,
+                autoSettings: newAutoSettings,
+            };
+            // store the object into localStorage
+            localStorage.setItem("settings", JSON.stringify(settings));
         }
         setSettingsModal((state) => !state);
+        // enable the body to scroll if the content is overflowing
         document.body.style.overflow = "visible";
     };
 

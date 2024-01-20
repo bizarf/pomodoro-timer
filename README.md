@@ -28,7 +28,7 @@ npm run dev
 -   [x] Settings panel
 -   [x] Customisable times, auto breaks toggle, auto pomodoros toggle, and long break interval trigger
 -   [ ] Alarm sounds
--   [ ] LocalStorage support
+-   [x] LocalStorage support
 -   [x] Mobile support
 
 ##### Tools and technologies used:

@@ -8,6 +8,7 @@ import Breaks from "./assets/types/Breaks";
 import skipIcon from "./assets/svgs/skip-arrow-svgrepo-com.svg";
 import AutoSettings from "./assets/types/AutoSettings";
 import Footer from "./assets/components/Footer";
+import ActivityContainer from "./assets/components/ActivityContainer";
 
 const App = () => {
     const [running, setRunning] = useState<boolean>(false);
@@ -202,18 +203,47 @@ const App = () => {
         if (Notification.permission === "default") {
             Notification.requestPermission();
         }
+
+        // attempt to get data from localStorage
+        if (localStorage) {
+            try {
+                const settingsStorage = localStorage.getItem("settings");
+                // update the three setting states if the settingsStorage variable has data
+                if (settingsStorage) {
+                    const settings = JSON.parse(settingsStorage);
+                    if (settings.times)
+                        setTimes((prevTimes) => ({
+                            ...prevTimes,
+                            pomodoro: settings.times.pomodoro,
+                            short: settings.times.short,
+                            long: settings.times.long,
+                        }));
+                    if (settings.breaks) {
+                        setBreaks((prevBreaks) => ({
+                            ...prevBreaks,
+                            longBreak: settings.breaks.longBreak,
+                        }));
+                    }
+                    if (settings.autoSettings) {
+                        setAutoSettings((prevAutoSettings) => ({
+                            ...prevAutoSettings,
+                            autoBreaks: settings.autoSettings.autoBreaks,
+                            autoPomodoro: settings.autoSettings.autoPomodoro,
+                        }));
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }, []);
 
     return (
         <>
             <div ref={appSectionRef} className="app-section">
                 <Header setSettingsModal={setSettingsModal} mode={mode} />
-                <div className="activity-container">
-                    {mode === "pomodoro" && <span>Study Time!</span>}
-                    {(mode === "short" || mode === "long") && (
-                        <span>Break Time!</span>
-                    )}
-                </div>
+                {/* current activity text */}
+                <ActivityContainer mode={mode} />
                 <div className="app-container" ref={timerContainerRef}>
                     <div className="mode-controls">
                         <button
