@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
-import Header from "./assets/components/Header";
-import Information from "./assets/components/Information";
-import Settings from "./assets/components/Settings";
-import Times from "./assets/types/Times";
-import Breaks from "./assets/types/Breaks";
+import Header from "./components/Header";
+import Information from "./components/Information";
+import Settings from "./components/Settings";
+import Times from "./types/Times";
+import Breaks from "./types/Breaks";
 import skipIcon from "./assets/svgs/skip-arrow-svgrepo-com.svg";
-import AutoSettings from "./assets/types/AutoSettings";
-import Footer from "./assets/components/Footer";
-import ActivityContainer from "./assets/components/ActivityContainer";
+import AutoSettings from "./types/AutoSettings";
+import Footer from "./components/Footer";
+import ActivityContainer from "./components/ActivityContainer";
 
 const App = () => {
     const [running, setRunning] = useState<boolean>(false);

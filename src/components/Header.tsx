@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import "../styles/Header.css";
-import gearIcon from "../svgs/gear-svgrepo-com.svg";
+import gearIcon from "../assets/svgs/gear-svgrepo-com.svg";
 
 type Props = {
     setSettingsModal: React.Dispatch<React.SetStateAction<boolean>>;
